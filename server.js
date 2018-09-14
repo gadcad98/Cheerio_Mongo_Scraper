@@ -1,19 +1,19 @@
-var express = require("express");
-var bodyParser = require("body-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
+const express = require("express");
+const bodyParser = require("body-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 
-// craping tools
-var axios = require("axios");
-var cheerio = require("cheerio");
+// scraping tools
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 // require all Models
-var db = require("./models");
+const db = require("./models");
 
-var PORT = PORT;
+const PORT = process.env.PORT || 3000;
 
 // initialize express
-var app = express();
+const app = express();
 
 // Configuring Middleware
 
@@ -22,20 +22,31 @@ app.use(logger("dev"));
 // use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: true }));
 // use express.static to serve the public folder as a static directory
-app.use(express.static("public"));
+app.use(express.static(__dirname + "public"));
 
 // connnect to Mongo DB
 mongoose.connect("");
 
 // Routes
 
-// a GET route for scraping the website
+// GET route for scraping Sherdog
 app.get("/scrape", function(req, res) {
     // grab the body of the html request
-    axios.get("").then(function(response) {
+    axios.get("http://forums.sherdog.com/forums/ufc-discussion.2/").then(function(response) {
         // load that into cheerio and save it to $ for a shorthand selector
-        var $ = cheerio.load(response.data);
+        const $ = cheerio.load(response.data);
 
-        
-    })
-})
+        // Grab the titles
+        $("h3 title").each(function(i, element) {
+            // Save an empty result object
+            const result = {};
+
+            // 
+        })
+    });
+
+});
+
+app.listen(PORT, function(){
+    console.log("listening on port: ", PORT);
+});
